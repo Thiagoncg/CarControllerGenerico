@@ -37,16 +37,20 @@ public class CarController : MonoBehaviour
     [SerializeField] private float breakForce;
     [SerializeField] private float maxSteeringAngle;
 
-    private void FixedUpdate() 
+    private void Update()
     {
         GetInput();
+    }
+
+    private void FixedUpdate() 
+    {
         HandleMotor();
         HandleSteering();
         UpdateWheels();
-        RestartPosition();       
-
+        RestartPosition(); 
     }
 
+    //Atualização da posição do carro
     private void RestartPosition()
     {
        if(Input.GetKey("r"))
@@ -57,6 +61,7 @@ public class CarController : MonoBehaviour
        }
     }
 
+    //capturar os eventos de input
     private void GetInput()
     {
         horizontalInput = Input.GetAxis(HORIZONTAL);
@@ -64,6 +69,8 @@ public class CarController : MonoBehaviour
         isBreaking = Input.GetKey(KeyCode.Space);
     }
 
+
+    //Lidar com o Motor
     private void HandleMotor()
     {
         frontLeftWheelCollider.motorTorque = verticalInput * motorForce;
@@ -72,12 +79,14 @@ public class CarController : MonoBehaviour
         ApplyBreaking();   
     }
 
+    //Lidar com o Freio
     private void ApplyBreaking()
     {
         frontRighttWheelCollider.brakeTorque = currentBreakForce;
         frontLeftWheelCollider.brakeTorque = currentBreakForce; 
     }
 
+    //Lidar com a Direção
     private void HandleSteering()
     {
         currentSteerAngle = maxSteeringAngle * horizontalInput;
@@ -85,6 +94,7 @@ public class CarController : MonoBehaviour
         frontRighttWheelCollider.steerAngle = currentSteerAngle;
     }
 
+    //Aualização das rodas
     private void UpdateWheels()
     {
        UpdateSingleWheelCollider(frontLeftWheelCollider, frontLeftWheelTransform);
@@ -94,6 +104,7 @@ public class CarController : MonoBehaviour
        
     }
 
+    //Sincronização das rodas
     private void UpdateSingleWheelCollider( WheelCollider wheelCollider, Transform wheelTransform)
     {
         Vector3 pos;
