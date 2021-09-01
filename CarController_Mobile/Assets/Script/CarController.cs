@@ -14,6 +14,7 @@ public class CarController : MonoBehaviour
     private const string HORIZONTAL = "Horizontal";
     private const string VERTICAL = "Vertical";
 
+
     private float horizontalInput;
     private float verticalInput;
     private float currentSteerAngle;
@@ -26,7 +27,7 @@ public class CarController : MonoBehaviour
     [SerializeField] private WheelCollider rearLeftWheelCollider;
     [SerializeField] private WheelCollider rearRightWheelCollider;
 
-    
+   
     [SerializeField] private Transform frontLeftWheelTransform;
     [SerializeField] private Transform frontRighttWheelTransform;
     [SerializeField] private Transform rearLeftWheelTransformr;
