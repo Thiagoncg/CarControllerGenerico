@@ -10,7 +10,7 @@ using UnityEngine;
 //ACENDER E APAGAR A LUZ DO CARRO
 
 public class CarController : MonoBehaviour
-{    
+{
     private const string HORIZONTAL = "Horizontal";
     private const string VERTICAL = "Vertical";
 
@@ -28,7 +28,7 @@ public class CarController : MonoBehaviour
     [SerializeField] private WheelCollider rearLeftWheelCollider;
     [SerializeField] private WheelCollider rearRightWheelCollider;
 
-   
+
     [SerializeField] private Transform frontLeftWheelTransform;
     [SerializeField] private Transform frontRighttWheelTransform;
     [SerializeField] private Transform rearLeftWheelTransformr;
@@ -39,35 +39,36 @@ public class CarController : MonoBehaviour
     [SerializeField] private float breakForce;
     [SerializeField] private float maxSteeringAngle;
 
+    [SerializeField] private Pad leftPad;
+
     private void Update()
     {
         GetInput();
     }
 
-    private void FixedUpdate() 
+    private void FixedUpdate()
     {
         HandleMotor();
         HandleSteering();
         UpdateWheels();
-        RestartPosition(); 
+        RestartPosition();
+        MobileController();
     }
 
     //Atualização da posição do carro
     private void RestartPosition()
     {
-       if(Input.GetKey("r"))
-       {
-           Debug.Log("RestartPosition");
-           transform.position = new Vector3(3f, transform.position.y, transform.position.z);
-           transform.rotation = Quaternion.Euler(0f, 0f, 0f);
-       }
+        if (Input.GetKey("r"))
+        {
+            transform.position = new Vector3(3f, transform.position.y, transform.position.z);
+            transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+        }
     }
 
     //capturar os eventos de input
     private void GetInput()
     {
         horizontalInput = Input.GetAxis(HORIZONTAL);
-        verticalInput = Input.GetAxis(VERTICAL);
         verticalInput = Input.GetAxis(VERTICAL);
         isBreaking = Input.GetKey(KeyCode.Space);
     }
@@ -79,14 +80,14 @@ public class CarController : MonoBehaviour
         frontLeftWheelCollider.motorTorque = verticalInput * motorForce;
         frontRighttWheelCollider.motorTorque = verticalInput * motorForce;
         currentBreakForce = isBreaking ? breakForce : 0f;
-        ApplyBreaking();   
+        ApplyBreaking();
     }
 
     //Lidar com o Freio
     private void ApplyBreaking()
     {
         frontRighttWheelCollider.brakeTorque = currentBreakForce;
-        frontLeftWheelCollider.brakeTorque = currentBreakForce; 
+        frontLeftWheelCollider.brakeTorque = currentBreakForce;
     }
 
     //Lidar com a Direção
@@ -100,21 +101,42 @@ public class CarController : MonoBehaviour
     //Aualização das rodas
     private void UpdateWheels()
     {
-       UpdateSingleWheelCollider(frontLeftWheelCollider, frontLeftWheelTransform);
-       UpdateSingleWheelCollider(frontRighttWheelCollider, frontRighttWheelTransform);
-       UpdateSingleWheelCollider(rearRightWheelCollider, rearRightWheelTransform);
-       UpdateSingleWheelCollider(rearLeftWheelCollider, rearLeftWheelTransformr);
-       
+        UpdateSingleWheelCollider(frontLeftWheelCollider, frontLeftWheelTransform);
+        UpdateSingleWheelCollider(frontRighttWheelCollider, frontRighttWheelTransform);
+        UpdateSingleWheelCollider(rearRightWheelCollider, rearRightWheelTransform);
+        UpdateSingleWheelCollider(rearLeftWheelCollider, rearLeftWheelTransformr);
+
     }
 
     //Sincronização das rodas
-    private void UpdateSingleWheelCollider( WheelCollider wheelCollider, Transform wheelTransform)
+    private void UpdateSingleWheelCollider(WheelCollider wheelCollider, Transform wheelTransform)
     {
         Vector3 pos;
         Quaternion rot;
-        wheelCollider.GetWorldPose(out pos,  out rot);
+        wheelCollider.GetWorldPose(out pos, out rot);
         wheelTransform.rotation = rot;
         wheelTransform.position = pos;
+    }
+
+    public void MobileController()
+    {
+        //Movimento de Carro se a posição do Pad for maior que 0
+        if (Mathf.Abs(leftPad.Y) > 0.2f)
+        {
+            frontLeftWheelCollider.GetComponent<WheelCollider>().motorTorque = motorForce * leftPad.Y;
+            frontRighttWheelCollider.GetComponent<WheelCollider>().motorTorque = motorForce * leftPad.Y;
+        }
+        else
+        {
+            frontLeftWheelCollider.GetComponent<WheelCollider>().motorTorque = -Vector3.Dot(transform.GetComponent<Rigidbody>().velocity, transform.forward) * motorForce;
+            frontRighttWheelCollider.GetComponent<WheelCollider>().motorTorque = -Vector3.Dot(transform.GetComponent<Rigidbody>().velocity, transform.forward) * motorForce;
+
+        }
+
+        //Rotação Oposta Entre X
+        frontLeftWheelCollider.GetComponent<WheelCollider>().steerAngle = maxSteeringAngle * leftPad.X;
+        frontRighttWheelCollider.GetComponent<WheelCollider>().steerAngle = maxSteeringAngle * leftPad.X;
+
     }
 
 }
