@@ -22,6 +22,7 @@ public class Pad : MonoBehaviour {
 
 
 
+
 	void Start () {
 		initialPos = topPad.position;
 	}
