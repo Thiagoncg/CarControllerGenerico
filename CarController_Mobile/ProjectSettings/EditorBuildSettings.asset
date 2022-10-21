@@ -5,10 +5,13 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/CarWindows.unity
     guid: 19f582da783f1994382d3432a00ff63f
   - enabled: 0
     path: Assets/Car Controller Android/Scenes/prefabScene.unity
     guid: a5b535466480e914fb22a893828b9850
+  - enabled: 1
+    path: Assets/Scenes/Swipe.unity
+    guid: 3e0401e8b60d0f14cb7e653ccef1a259
   m_configObjects: {}
